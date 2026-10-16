@@ -69,7 +69,7 @@ public class User {
         role VARCHAR(16) NOT NULL,
         status VARCHAR(16) NOT NULL,
         failed_login_attempts INTEGER NOT NULL DEFAULT 0,
-        created_at TIMESTAMPTZ NOT NULL,
-        updated_at TIMESTAMPTZ NOT NULL
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
  */

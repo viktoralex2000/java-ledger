@@ -96,11 +96,11 @@ public class Transfer {
         amount NUMERIC(28,12) NOT NULL,
         converted_amount NUMERIC(28,12),
         fx_rate NUMERIC(28,12),
-        fee NUMERIC(28,12) NOT NULL,
+        fee NUMERIC(28,12) NOT NULL DEFAULT 0,
         status VARCHAR(16) NOT NULL,
         error_message VARCHAR(1000),
-        version BIGINT NOT NULL,
-        created_at TIMESTAMPTZ NOT NULL,
+        version BIGINT NOT NULL DEFAULT 0,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         completed_at TIMESTAMPTZ
     );
 */

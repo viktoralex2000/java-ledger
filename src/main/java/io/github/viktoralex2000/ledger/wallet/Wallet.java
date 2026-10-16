@@ -61,10 +61,10 @@ public class Wallet {
         id BIGSERIAL PRIMARY KEY,
         user_id BIGINT NOT NULL REFERENCES users(id),
         currency VARCHAR(3) NOT NULL,
-        balance NUMERIC(28,12) NOT NULL,
+        balance NUMERIC(28,12) NOT NULL DEFAULT 0,
         status VARCHAR(16) NOT NULL,
-        version BIGINT NOT NULL,
-        created_at TIMESTAMPTZ NOT NULL,
+        version BIGINT NOT NULL DEFAULT 0,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         CONSTRAINT uk_wallets_user_currency UNIQUE (user_id, currency)
     );
 */
