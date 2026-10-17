@@ -1,6 +1,5 @@
-package io.github.viktoralex2000.ledger.wallet;
+package io.github.viktoralex2000.ledger.model;
 
-import io.github.viktoralex2000.ledger.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,7 +20,7 @@ import java.time.OffsetDateTime;
     )
 )
 //UK (user_id, currency)
-public class Wallet {
+public class WalletEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +28,7 @@ public class Wallet {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity user;
     //* user_id : BIGINT «FK»
 
     @Column(name = "currency", nullable = false, length = 3)

@@ -1,8 +1,5 @@
-package io.github.viktoralex2000.ledger.ledgerentry;
+package io.github.viktoralex2000.ledger.model;
 
-import io.github.viktoralex2000.ledger.paymenttransaction.PaymentTransaction;
-import io.github.viktoralex2000.ledger.transfer.Transfer;
-import io.github.viktoralex2000.ledger.wallet.Wallet;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,7 +18,7 @@ import java.time.OffsetDateTime;
                 columnNames = {"wallet_id", "operation_key"}
         )
 )
-public class LedgerEntry {
+public class LedgerEntryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,17 +27,17 @@ public class LedgerEntry {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wallet_id", nullable = false)
-    private Wallet wallet;
+    private WalletEntity wallet;
     //* wallet_id : BIGINT «FK»
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transfer_id")
-    private Transfer transfer;
+    private TransferEntity transfer;
     //transfer_id : BIGINT «FK»
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
-    private PaymentTransaction payment;
+    private PaymentTransactionEntity payment;
     //payment_id : BIGINT «FK»
 
     @Column(name = "entry_type", nullable = false, length = 8)

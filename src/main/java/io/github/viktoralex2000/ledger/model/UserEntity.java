@@ -1,4 +1,4 @@
-package io.github.viktoralex2000.ledger.user;
+package io.github.viktoralex2000.ledger.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 @Builder
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

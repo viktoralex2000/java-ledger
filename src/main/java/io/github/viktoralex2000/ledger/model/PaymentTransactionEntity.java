@@ -1,7 +1,5 @@
-package io.github.viktoralex2000.ledger.paymenttransaction;
+package io.github.viktoralex2000.ledger.model;
 
-import io.github.viktoralex2000.ledger.user.User;
-import io.github.viktoralex2000.ledger.wallet.Wallet;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,7 +14,7 @@ import java.time.OffsetDateTime;
 @Builder
 @Entity
 @Table(name = "payment_transactions")
-public class PaymentTransaction {
+public class PaymentTransactionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,12 +27,12 @@ public class PaymentTransaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity user;
     //* user_id : BIGINT «FK»
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wallet_id", nullable = false)
-    private Wallet wallet;
+    private WalletEntity wallet;
     //* wallet_id : BIGINT «FK»
 
     @Column(name = "type", nullable = false, length = 16)

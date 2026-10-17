@@ -1,7 +1,5 @@
-package io.github.viktoralex2000.ledger.transfer;
+package io.github.viktoralex2000.ledger.model;
 
-import io.github.viktoralex2000.ledger.user.User;
-import io.github.viktoralex2000.ledger.wallet.Wallet;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,7 +13,7 @@ import java.time.OffsetDateTime;
 @Builder
 @Entity
 @Table(name = "transfers")
-public class Transfer {
+public class TransferEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,17 +26,17 @@ public class Transfer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity user;
     //* user_id : BIGINT «FK»
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_wallet_id", nullable = false)
-    private Wallet walletFrom;
+    private WalletEntity walletFrom;
     //from_wallet_id : BIGINT «FK»
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_wallet_id", nullable = false)
-    private Wallet walletTo;
+    private WalletEntity walletTo;
     //to_wallet_id : BIGINT «FK»
 
     @Column(name = "currency", nullable = false, length = 3)

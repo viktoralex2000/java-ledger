@@ -1,4 +1,4 @@
-package io.github.viktoralex2000.ledger.outboxevent;
+package io.github.viktoralex2000.ledger.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 @Builder
 @Entity
 @Table(name = "outbox_events")
-public class OutboxEvent {
+public class OutboxEventEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

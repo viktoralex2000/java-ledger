@@ -1,4 +1,4 @@
-package io.github.viktoralex2000.ledger.exchangerate;
+package io.github.viktoralex2000.ledger.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,7 +18,7 @@ import java.time.OffsetDateTime;
                 columnNames = {"base_currency", "quote_currency"}
         )
 )
-public class ExchangeRate {
+public class ExchangeRateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
