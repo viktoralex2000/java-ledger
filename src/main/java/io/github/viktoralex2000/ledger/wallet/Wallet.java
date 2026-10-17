@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 @Table(
     name = "wallets",
     uniqueConstraints = @UniqueConstraint(
-            name = "uk_wallets_user_currency",
+            name = "uk_wallet_user_currency",
             columnNames = {"user_id", "currency"}
     )
 )
@@ -65,6 +65,6 @@ public class Wallet {
         status VARCHAR(16) NOT NULL,
         version BIGINT NOT NULL DEFAULT 0,
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        CONSTRAINT uk_wallets_user_currency UNIQUE (user_id, currency)
+        CONSTRAINT uk_wallet_user_currency UNIQUE (user_id, currency)
     );
 */

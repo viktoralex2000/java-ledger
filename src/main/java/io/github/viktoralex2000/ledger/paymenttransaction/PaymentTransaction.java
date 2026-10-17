@@ -39,7 +39,7 @@ public class PaymentTransaction {
 
     @Column(name = "type", nullable = false, length = 16)
     private String type;
-    //type : VARCHAR(16)
+    //* type : VARCHAR(16)
 
     @Column(name = "amount", nullable = false, precision = 28, scale = 12)
     private BigDecimal amount;
