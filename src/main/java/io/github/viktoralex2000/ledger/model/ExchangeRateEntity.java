@@ -2,15 +2,11 @@ package io.github.viktoralex2000.ledger.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
 @Entity
 @Table(name = "exchange_rates",
         uniqueConstraints = @UniqueConstraint(
@@ -25,22 +21,35 @@ public class ExchangeRateEntity {
     private Long id;
     //* id : BIGINT «PK»
 
-    @Column(name = "base_currency", nullable = false, length = 3)
+    @Column(name = "base_currency", nullable = false, updatable = false, length = 3)
     private String baseCurrency;
     //* base_currency : VARCHAR(3)
 
-    @Column(name = "quote_currency", nullable = false, length = 3)
+    @Column(name = "quote_currency", nullable = false, updatable = false, length = 3)
     private String quoteCurrency;
     //* quote_currency : VARCHAR(3)
 
-    @Column(name = "rate", precision = 28, scale = 12)
+    @Column(name = "rate", nullable = false, precision = 28, scale = 12)
     private BigDecimal rate;
     //* rate : NUMERIC(28,12)
 
-    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
-    private OffsetDateTime updatedAt;
+    private Instant updatedAt;
     //* updated_at : TIMESTAMPTZ
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void onPersist() {
+        this.updatedAt = Instant.now();
+    }
 }
 
 /*

@@ -1,16 +1,13 @@
 package io.github.viktoralex2000.ledger.model;
 
+import io.github.viktoralex2000.ledger.model.enums.WalletStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
 @Entity
 @Table(
     name = "wallets",
@@ -31,27 +28,54 @@ public class WalletEntity {
     private UserEntity user;
     //* user_id : BIGINT «FK»
 
-    @Column(name = "currency", nullable = false, length = 3)
+    @Column(name = "currency", nullable = false, updatable = false, length = 3)
     private String currency;
     //* currency : VARCHAR(3)
 
     @Column(name = "balance", nullable = false, precision = 28, scale = 12)
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
     //* balance : NUMERIC(28,12)
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 16)
-    private String status;
+    private WalletStatus status = WalletStatus.ACTIVE;
     //* status : VARCHAR(16)
 
     @Version
     @Column(name = "version", nullable = false)
-    private Long version;
+    private long version;
     //* version : BIGINT
 
-    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
     //* created_at : TIMESTAMPTZ
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setStatus(WalletStatus status) {
+        this.status = status;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    @PrePersist
+    private void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+    }
 
 }
 

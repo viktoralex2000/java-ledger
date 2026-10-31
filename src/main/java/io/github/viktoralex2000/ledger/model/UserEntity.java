@@ -1,15 +1,13 @@
 package io.github.viktoralex2000.ledger.model;
 
+import io.github.viktoralex2000.ledger.model.enums.Role;
+import io.github.viktoralex2000.ledger.model.enums.UserStatus;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.*;
+import lombok.Getter;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -35,30 +33,75 @@ public class UserEntity {
     private String lastName;
     //last_name : VARCHAR(120)
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 16)
-    private String role;
+    private Role role = Role.USER;
     //* role : VARCHAR(16)
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 16)
-    private String status;
+    private UserStatus status = UserStatus.ACTIVE;
     //* status : VARCHAR(16)
 
     @Column(name = "failed_login_attempts", nullable = false)
     private int failedLoginAttempts;
     //* failed_login_attempts : INTEGER
 
-    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
     //* created_at : TIMESTAMPTZ
 
-    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
-    private OffsetDateTime updatedAt;
+    private Instant updatedAt;
     //* updated_at : TIMESTAMPTZ
 
-}
+    //Методы
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
+
+    public void setFailedLoginAttempts(int failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
+    }
+
+    @PrePersist
+    private void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        this.updatedAt = Instant.now();
+    }
+
+}
 /*
     CREATE TABLE IF NOT EXISTS users (
         id BIGSERIAL PRIMARY KEY,

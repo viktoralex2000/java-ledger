@@ -1,17 +1,14 @@
 package io.github.viktoralex2000.ledger.model;
 
+import io.github.viktoralex2000.ledger.model.enums.OutboxStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
 @Entity
 @Table(name = "outbox_events")
 public class OutboxEventEntity {
@@ -38,32 +35,73 @@ public class OutboxEventEntity {
     private String payload;
     //*payload : JSONB
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 16)
-    private String status;
+    private OutboxStatus status = OutboxStatus.PENDING;
     //* status : VARCHAR(16)
 
     @Column(name = "attempts", nullable = false)
-    private int attempts;
+    private int attempts = 0;
     //* attempts : INTEGER
 
     @Column(name = "available_at", nullable = false)
-    private OffsetDateTime availableAt;
+    private Instant availableAt;
     //*available_at : TIMESTAMPTZ
 
-    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
     //* created_at : TIMESTAMPTZ
 
     @Column(name = "published_at")
-    private OffsetDateTime publishedAt;
+    private Instant publishedAt;
     //published_at : TIMESTAMPTZ
 
     @Version
     @Column(name = "version", nullable = false)
-    private Long version;
+    private long version;
     //* version : BIGINT
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setAggregateType(String aggregateType) {
+        this.aggregateType = aggregateType;
+    }
+
+    public void setAggregateId(String aggregateId) {
+        this.aggregateId = aggregateId;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public void setStatus(OutboxStatus status) {
+        this.status = status;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
+    }
+
+    public void setAvailableAt(Instant availableAt) {
+        this.availableAt = availableAt;
+    }
+
+    public void setPublishedAt(Instant publishedAt) {
+        this.publishedAt = publishedAt;
+    }
+
+    @PrePersist
+    private void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+    }
 }
 
 /*

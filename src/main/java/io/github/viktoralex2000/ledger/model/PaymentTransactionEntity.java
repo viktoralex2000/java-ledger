@@ -1,17 +1,14 @@
 package io.github.viktoralex2000.ledger.model;
 
+import io.github.viktoralex2000.ledger.model.enums.PaymentStatus;
+import io.github.viktoralex2000.ledger.model.enums.PaymentType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
 @Entity
 @Table(name = "payment_transactions")
 public class PaymentTransactionEntity {
@@ -35,8 +32,9 @@ public class PaymentTransactionEntity {
     private WalletEntity wallet;
     //* wallet_id : BIGINT «FK»
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 16)
-    private String type;
+    private PaymentType type;
     //* type : VARCHAR(16)
 
     @Column(name = "amount", nullable = false, precision = 28, scale = 12)
@@ -47,8 +45,9 @@ public class PaymentTransactionEntity {
     private String currency;
     //* currency : VARCHAR(3)
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 16)
-    private String status;
+    private PaymentStatus status = PaymentStatus.PENDING;
     //* status : VARCHAR(16)
 
     @Column(name = "external_payment_id", length = 64)
@@ -60,23 +59,78 @@ public class PaymentTransactionEntity {
     //failure_reason : VARCHAR(1000)
 
     @Column(name = "attempts", nullable = false)
-    private int attempts;
+    private int attempts = 0;
     //* attempts : INTEGER
 
     @Version
     @Column(name = "version", nullable = false)
-    private Long version;
+    private long version;
     //* version : BIGINT
 
-    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
     //* created_at : TIMESTAMPTZ
 
-    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
-    private OffsetDateTime updatedAt;
+    private Instant updatedAt;
     //* updated_at : TIMESTAMPTZ
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setIdempotencyKey(String idempotencyKey) {
+        this.idempotencyKey = idempotencyKey;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public void setWallet(WalletEntity wallet) {
+        this.wallet = wallet;
+    }
+
+    public void setType(PaymentType type) {
+        this.type = type;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
+
+    public void setExternalPaymentId(String externalPaymentId) {
+        this.externalPaymentId = externalPaymentId;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
+    }
+
+    @PrePersist
+    private void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        this.updatedAt = Instant.now();
+    }
 }
 
 /*
