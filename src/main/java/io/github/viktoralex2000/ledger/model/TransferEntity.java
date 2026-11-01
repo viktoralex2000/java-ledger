@@ -1,16 +1,13 @@
 package io.github.viktoralex2000.ledger.model;
 
+import io.github.viktoralex2000.ledger.model.enums.TransferStatus;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
 @Entity
 @Table(name = "transfers")
 public class TransferEntity {
@@ -30,13 +27,13 @@ public class TransferEntity {
     //* user_id : BIGINT «FK»
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_wallet_id", nullable = false)
-    private WalletEntity walletFrom;
+    @JoinColumn(name = "from_wallet_id")
+    private WalletEntity fromWallet;
     //from_wallet_id : BIGINT «FK»
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_wallet_id", nullable = false)
-    private WalletEntity walletTo;
+    @JoinColumn(name = "to_wallet_id")
+    private WalletEntity toWallet;
     //to_wallet_id : BIGINT «FK»
 
     @Column(name = "currency", nullable = false, length = 3)
@@ -56,11 +53,12 @@ public class TransferEntity {
     //fx_rate : NUMERIC(28,12)
 
     @Column(name = "fee", nullable = false, precision = 28, scale = 12)
-    private BigDecimal fee;
+    private BigDecimal fee = BigDecimal.ZERO;
     //* fee : NUMERIC(28,12)
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 16)
-    private String status;
+    private TransferStatus status = TransferStatus.PENDING;
     //* status : VARCHAR(16)
 
     @Column(name = "error_message", length = 1000)
@@ -69,18 +67,74 @@ public class TransferEntity {
 
     @Version
     @Column(name = "version", nullable = false)
-    private Long version;
+    private long version;
     //* version : BIGINT
 
-    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
     //* created_at : TIMESTAMPTZ
 
     @Column(name = "completed_at")
-    private OffsetDateTime completedAt;
+    private Instant completedAt;
     //completed_at : TIMESTAMPTZ
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setIdempotencyKey(String idempotencyKey) {
+        this.idempotencyKey = idempotencyKey;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public void setFromWallet(WalletEntity fromWallet) {
+        this.fromWallet = fromWallet;
+    }
+
+    public void setToWallet(WalletEntity toWallet) {
+        this.toWallet = toWallet;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public void setConvertedAmount(BigDecimal convertedAmount) {
+        this.convertedAmount = convertedAmount;
+    }
+
+    public void setFxRate(BigDecimal fxRate) {
+        this.fxRate = fxRate;
+    }
+
+    public void setFee(BigDecimal fee) {
+        this.fee = fee;
+    }
+
+    public void setStatus(TransferStatus status) {
+        this.status = status;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public void setCompletedAt(Instant completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    @PrePersist
+    private void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+    }
 }
 
 /*

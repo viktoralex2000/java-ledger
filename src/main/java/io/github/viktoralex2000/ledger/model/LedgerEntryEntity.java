@@ -1,16 +1,13 @@
 package io.github.viktoralex2000.ledger.model;
 
+import io.github.viktoralex2000.ledger.model.enums.EntryType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
 @Entity
 @Table(name = "ledger_entries",
         uniqueConstraints = @UniqueConstraint(
@@ -40,8 +37,9 @@ public class LedgerEntryEntity {
     private PaymentTransactionEntity payment;
     //payment_id : BIGINT «FK»
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "entry_type", nullable = false, length = 8)
-    private String entryType;
+    private EntryType entryType;
     //* entry_type : VARCHAR(8)
 
     @Column(name = "amount", nullable = false, precision = 28, scale = 12)
@@ -64,11 +62,55 @@ public class LedgerEntryEntity {
     private String operationKey;
     //* operation_key : VARCHAR(120) «UK per wallet»
 
-    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
     //* created_at : TIMESTAMPTZ
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setWallet(WalletEntity wallet) {
+        this.wallet = wallet;
+    }
+
+    public void setTransfer(TransferEntity transfer) {
+        this.transfer = transfer;
+    }
+
+    public void setPayment(PaymentTransactionEntity payment) {
+        this.payment = payment;
+    }
+
+    public void setEntryType(EntryType entryType) {
+        this.entryType = entryType;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public void setBalanceAfter(BigDecimal balanceAfter) {
+        this.balanceAfter = balanceAfter;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setOperationKey(String operationKey) {
+        this.operationKey = operationKey;
+    }
+
+    @PrePersist
+    private void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+    }
 }
 
 /*
