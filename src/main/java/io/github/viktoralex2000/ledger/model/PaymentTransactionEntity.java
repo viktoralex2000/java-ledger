@@ -1,18 +1,33 @@
 package io.github.viktoralex2000.ledger.model;
 
-import io.github.viktoralex2000.ledger.model.enums.PaymentStatus;
-import io.github.viktoralex2000.ledger.model.enums.PaymentType;
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.Instant;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import lombok.Getter;
 
 @Getter
 @Entity
 @Table(name = "payment_transactions")
 public class PaymentTransactionEntity {
 
+	 public enum PaymentType {TOP_UP, WITHDRAW}
+
+	 public enum PaymentStatus {PENDING, COMPLETED, FAILED, ROLLED_BACK}
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -76,49 +91,7 @@ public class PaymentTransactionEntity {
     //* updated_at : TIMESTAMPTZ
 
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setIdempotencyKey(String idempotencyKey) {
-        this.idempotencyKey = idempotencyKey;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public void setWallet(WalletEntity wallet) {
-        this.wallet = wallet;
-    }
-
-    public void setType(PaymentType type) {
-        this.type = type;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public void setStatus(PaymentStatus status) {
-        this.status = status;
-    }
-
-    public void setExternalPaymentId(String externalPaymentId) {
-        this.externalPaymentId = externalPaymentId;
-    }
-
-    public void setFailureReason(String failureReason) {
-        this.failureReason = failureReason;
-    }
-
-    public void setAttempts(int attempts) {
-        this.attempts = attempts;
-    }
+   
 
     @PrePersist
     private void onCreate() {
@@ -127,7 +100,111 @@ public class PaymentTransactionEntity {
         this.updatedAt = now;
     }
 
-    @PreUpdate
+    public String getIdempotencyKey() {
+		return idempotencyKey;
+	}
+
+	public void setIdempotencyKey(String idempotencyKey) {
+		this.idempotencyKey = idempotencyKey;
+	}
+
+	public UserEntity getUser() {
+		return user;
+	}
+
+	public void setUser(UserEntity user) {
+		this.user = user;
+	}
+
+	public WalletEntity getWallet() {
+		return wallet;
+	}
+
+	public void setWallet(WalletEntity wallet) {
+		this.wallet = wallet;
+	}
+
+	public PaymentType getType() {
+		return type;
+	}
+
+	public void setType(PaymentType type) {
+		this.type = type;
+	}
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public PaymentStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(PaymentStatus status) {
+		this.status = status;
+	}
+
+	public String getExternalPaymentId() {
+		return externalPaymentId;
+	}
+
+	public void setExternalPaymentId(String externalPaymentId) {
+		this.externalPaymentId = externalPaymentId;
+	}
+
+	public String getFailureReason() {
+		return failureReason;
+	}
+
+	public void setFailureReason(String failureReason) {
+		this.failureReason = failureReason;
+	}
+
+	public int getAttempts() {
+		return attempts;
+	}
+
+	public void setAttempts(int attempts) {
+		this.attempts = attempts;
+	}
+
+	public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public Instant getUpdatedAt() {
+		return updatedAt;
+	}
+
+	@PreUpdate
     private void onUpdate() {
         this.updatedAt = Instant.now();
     }

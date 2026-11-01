@@ -37,19 +37,67 @@ public class ExchangeRateEntity {
     private Instant updatedAt;
     //* updated_at : TIMESTAMPTZ
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setRate(BigDecimal rate) {
-        this.rate = rate;
-    }
+   
 
     @PrePersist
     @PreUpdate
     private void onPersist() {
         this.updatedAt = Instant.now();
     }
+
+
+
+	public String getBaseCurrency() {
+		return baseCurrency;
+	}
+
+
+
+	public void setBaseCurrency(String baseCurrency) {
+		this.baseCurrency = baseCurrency;
+	}
+
+
+
+	public String getQuoteCurrency() {
+		return quoteCurrency;
+	}
+
+
+
+	public void setQuoteCurrency(String quoteCurrency) {
+		this.quoteCurrency = quoteCurrency;
+	}
+
+
+
+	public BigDecimal getRate() {
+		return rate;
+	}
+
+
+
+	public void setRate(BigDecimal rate) {
+		this.rate = rate;
+	}
+
+
+
+	public Instant getUpdatedAt() {
+		return updatedAt;
+	}
+
+
+
+	public void setUpdatedAt(Instant updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+
+
+	public Long getId() {
+		return id;
+	}
 }
 
 /*

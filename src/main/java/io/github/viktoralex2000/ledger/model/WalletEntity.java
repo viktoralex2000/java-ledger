@@ -1,30 +1,27 @@
 package io.github.viktoralex2000.ledger.model;
 
-import io.github.viktoralex2000.ledger.model.enums.WalletStatus;
-import jakarta.persistence.*;
-import lombok.*;
-<<<<<<< HEAD
-
-import org.hibernate.annotations.CreationTimestamp;
-=======
->>>>>>> branch 'create-the-project-structure' of https://github.com/viktoralex2000/java-ledger.git
-
 import java.math.BigDecimal;
 import java.time.Instant;
-<<<<<<< HEAD
-import java.time.OffsetDateTime;
-=======
->>>>>>> branch 'create-the-project-structure' of https://github.com/viktoralex2000/java-ledger.git
 
-<<<<<<< HEAD
-=======
-@Getter
->>>>>>> branch 'create-the-project-structure' of https://github.com/viktoralex2000/java-ledger.git
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+
 @Entity
 @Table(name = "wallets")
 public class WalletEntity {
 
-    public enum Status { ACTIVE, FROZEN, CLOSED }
+	public enum WalletStatus {ACTIVE, FROZEN, CLOSED}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,76 +31,41 @@ public class WalletEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-<<<<<<< HEAD
-    @Column(nullable = false, length = 3, updatable = false)
-=======
+
+   
     @Column(name = "currency", nullable = false, updatable = false, length = 3)
->>>>>>> branch 'create-the-project-structure' of https://github.com/viktoralex2000/java-ledger.git
+
     private String currency;
 
-<<<<<<< HEAD
-    @Column(nullable = false, precision = 28, scale = 12)
-    private BigDecimal balance = BigDecimal.ZERO;
-=======
+
     @Column(name = "balance", nullable = false, precision = 28, scale = 12)
     private BigDecimal balance = BigDecimal.ZERO;
     //* balance : NUMERIC(28,12)
->>>>>>> branch 'create-the-project-structure' of https://github.com/viktoralex2000/java-ledger.git
+
 
     @Enumerated(EnumType.STRING)
-<<<<<<< HEAD
-    @Column(nullable = false, length = 16)
-    private Status status = Status.ACTIVE;
-=======
+
     @Column(name = "status", nullable = false, length = 16)
     private WalletStatus status = WalletStatus.ACTIVE;
     //* status : VARCHAR(16)
->>>>>>> branch 'create-the-project-structure' of https://github.com/viktoralex2000/java-ledger.git
+
 
     @Version
-<<<<<<< HEAD
-    @Column(nullable = false)
-    private long version;
-=======
+
     @Column(name = "version", nullable = false)
     private long version;
     //* version : BIGINT
->>>>>>> branch 'create-the-project-structure' of https://github.com/viktoralex2000/java-ledger.git
+
 
     @Column(name = "created_at", nullable = false, updatable = false)
-<<<<<<< HEAD
-    private Instant createdAt = Instant.now();
-=======
+
     private Instant createdAt;
     //* created_at : TIMESTAMPTZ
->>>>>>> branch 'create-the-project-structure' of https://github.com/viktoralex2000/java-ledger.git
 
-<<<<<<< HEAD
-    @PrePersist
-    void onCreate() {
-        createdAt = Instant.now();
-    }
-=======
+    
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public void setStatus(WalletStatus status) {
-        this.status = status;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
+   
 
     @PrePersist
     private void onCreate() {
@@ -111,7 +73,124 @@ public class WalletEntity {
         this.createdAt = now;
     }
 
->>>>>>> branch 'create-the-project-structure' of https://github.com/viktoralex2000/java-ledger.git
+
+
+
+
+
+	public UserEntity getUser() {
+		return user;
+	}
+
+
+
+
+
+
+	public void setUser(UserEntity user) {
+		this.user = user;
+	}
+
+
+
+
+
+
+	public String getCurrency() {
+		return currency;
+	}
+
+
+
+
+
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+
+
+
+
+
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+
+
+
+
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
+
+
+
+
+
+
+	public WalletStatus getStatus() {
+		return status;
+	}
+
+
+
+
+
+
+	public void setStatus(WalletStatus status) {
+		this.status = status;
+	}
+
+
+
+
+
+
+	public long getVersion() {
+		return version;
+	}
+
+
+
+
+
+
+	public void setVersion(long version) {
+		this.version = version;
+	}
+
+
+
+
+
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+
+
+
+
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
+
+
+
+
+	public Long getId() {
+		return id;
+	}
+
+
 }
 
 /*

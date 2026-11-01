@@ -1,7 +1,8 @@
 package io.github.viktoralex2000.ledger.repository;
 
 import io.github.viktoralex2000.ledger.model.OutboxEventEntity;
-import io.github.viktoralex2000.ledger.model.enums.OutboxStatus;
+import io.github.viktoralex2000.ledger.model.OutboxEventEntity.OutboxStatus;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

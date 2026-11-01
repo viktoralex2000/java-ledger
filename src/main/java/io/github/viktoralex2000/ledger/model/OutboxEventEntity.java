@@ -1,6 +1,5 @@
 package io.github.viktoralex2000.ledger.model;
 
-import io.github.viktoralex2000.ledger.model.enums.OutboxStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -13,6 +12,8 @@ import java.time.Instant;
 @Table(name = "outbox_events")
 public class OutboxEventEntity {
 
+	public enum OutboxStatus {PENDING, PUBLISHED, FAILED}
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

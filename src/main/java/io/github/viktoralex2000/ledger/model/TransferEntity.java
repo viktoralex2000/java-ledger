@@ -1,17 +1,30 @@
 package io.github.viktoralex2000.ledger.model;
 
-import io.github.viktoralex2000.ledger.model.enums.TransferStatus;
-import jakarta.persistence.*;
-import lombok.Getter;
-
 import java.math.BigDecimal;
 import java.time.Instant;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import lombok.Getter;
 
 @Getter
 @Entity
 @Table(name = "transfers")
 public class TransferEntity {
 
+	public enum TransferStatus {PENDING, COMPLETED, ROLLED_BACK, FAILED}
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -78,63 +91,187 @@ public class TransferEntity {
     private Instant completedAt;
     //completed_at : TIMESTAMPTZ
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setIdempotencyKey(String idempotencyKey) {
-        this.idempotencyKey = idempotencyKey;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public void setFromWallet(WalletEntity fromWallet) {
-        this.fromWallet = fromWallet;
-    }
-
-    public void setToWallet(WalletEntity toWallet) {
-        this.toWallet = toWallet;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public void setConvertedAmount(BigDecimal convertedAmount) {
-        this.convertedAmount = convertedAmount;
-    }
-
-    public void setFxRate(BigDecimal fxRate) {
-        this.fxRate = fxRate;
-    }
-
-    public void setFee(BigDecimal fee) {
-        this.fee = fee;
-    }
-
-    public void setStatus(TransferStatus status) {
-        this.status = status;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public void setCompletedAt(Instant completedAt) {
-        this.completedAt = completedAt;
-    }
+    
 
     @PrePersist
     private void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
     }
+
+
+
+	public String getIdempotencyKey() {
+		return idempotencyKey;
+	}
+
+
+
+	public void setIdempotencyKey(String idempotencyKey) {
+		this.idempotencyKey = idempotencyKey;
+	}
+
+
+
+	public UserEntity getUser() {
+		return user;
+	}
+
+
+
+	public void setUser(UserEntity user) {
+		this.user = user;
+	}
+
+
+
+	public WalletEntity getFromWallet() {
+		return fromWallet;
+	}
+
+
+
+	public void setFromWallet(WalletEntity fromWallet) {
+		this.fromWallet = fromWallet;
+	}
+
+
+
+	public WalletEntity getToWallet() {
+		return toWallet;
+	}
+
+
+
+	public void setToWallet(WalletEntity toWallet) {
+		this.toWallet = toWallet;
+	}
+
+
+
+	public String getCurrency() {
+		return currency;
+	}
+
+
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+
+
+	public BigDecimal getConvertedAmount() {
+		return convertedAmount;
+	}
+
+
+
+	public void setConvertedAmount(BigDecimal convertedAmount) {
+		this.convertedAmount = convertedAmount;
+	}
+
+
+
+	public BigDecimal getFxRate() {
+		return fxRate;
+	}
+
+
+
+	public void setFxRate(BigDecimal fxRate) {
+		this.fxRate = fxRate;
+	}
+
+
+
+	public BigDecimal getFee() {
+		return fee;
+	}
+
+
+
+	public void setFee(BigDecimal fee) {
+		this.fee = fee;
+	}
+
+
+
+	public TransferStatus getStatus() {
+		return status;
+	}
+
+
+
+	public void setStatus(TransferStatus status) {
+		this.status = status;
+	}
+
+
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
+
+
+	public long getVersion() {
+		return version;
+	}
+
+
+
+	public void setVersion(long version) {
+		this.version = version;
+	}
+
+
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
+
+	public Instant getCompletedAt() {
+		return completedAt;
+	}
+
+
+
+	public void setCompletedAt(Instant completedAt) {
+		this.completedAt = completedAt;
+	}
+
+
+
+	public Long getId() {
+		return id;
+	}
 }
 
 /*
