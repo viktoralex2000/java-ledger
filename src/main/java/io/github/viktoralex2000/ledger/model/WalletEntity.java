@@ -2,57 +2,48 @@ package io.github.viktoralex2000.ledger.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
-@Table(
-    name = "wallets",
-    uniqueConstraints = @UniqueConstraint(
-            name = "uk_wallet_user_currency",
-            columnNames = {"user_id", "currency"}
-    )
-)
-//UK (user_id, currency)
+@Table(name = "wallets")
 public class WalletEntity {
+
+    public enum Status { ACTIVE, FROZEN, CLOSED }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //* id : BIGINT «PK»
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
-    //* user_id : BIGINT «FK»
 
-    @Column(name = "currency", nullable = false, length = 3)
+    @Column(nullable = false, length = 3, updatable = false)
     private String currency;
-    //* currency : VARCHAR(3)
 
-    @Column(name = "balance", nullable = false, precision = 28, scale = 12)
-    private BigDecimal balance;
-    //* balance : NUMERIC(28,12)
+    @Column(nullable = false, precision = 28, scale = 12)
+    private BigDecimal balance = BigDecimal.ZERO;
 
-    @Column(name = "status", nullable = false, length = 16)
-    private String status;
-    //* status : VARCHAR(16)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 16)
+    private Status status = Status.ACTIVE;
 
     @Version
-    @Column(name = "version", nullable = false)
-    private Long version;
-    //* version : BIGINT
+    @Column(nullable = false)
+    private long version;
 
-    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
-    //* created_at : TIMESTAMPTZ
+    private Instant createdAt = Instant.now();
 
+    @PrePersist
+    void onCreate() {
+        createdAt = Instant.now();
+    }
 }
 
 /*
