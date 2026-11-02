@@ -1,4 +1,16 @@
 package io.github.viktoralex2000.ledger.dto;
 
-public record LoginRequest() {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginRequest(
+
+		@NotBlank 
+		@Email 
+		String email,
+        
+		@NotBlank 
+        String password
+
+) {
 }

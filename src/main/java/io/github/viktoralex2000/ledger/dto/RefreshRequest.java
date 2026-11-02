@@ -1,4 +1,11 @@
 package io.github.viktoralex2000.ledger.dto;
 
-public record RefreshRequest() {
+import jakarta.validation.constraints.NotBlank;
+
+public record RefreshRequest(
+
+        @NotBlank
+        String refreshToken
+
+) {
 }
