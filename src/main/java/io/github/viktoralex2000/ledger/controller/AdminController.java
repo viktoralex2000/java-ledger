@@ -25,23 +25,24 @@ public class AdminController {
     @PatchMapping("/upsertRate")
     public ResponseEntity<ExchangeRateDto> upsertRate(
             @Valid @RequestBody ExchangeRateUpdateRequest exchangeRateUpdateRequest) {
-        return null;
+        return ResponseEntity.ok(exchangeRateService.upsert(exchangeRateUpdateRequest));
     }
 
     @DeleteMapping("/deleteRate")
     public ResponseEntity<Void> deleteRate(
             @RequestParam String baseCurrency,
             @RequestParam String quoteCurrency) {
-        return null;
+        exchangeRateService.delete(baseCurrency, quoteCurrency);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/allTransfers")
     public ResponseEntity<List<TransferDto>> allTransfers() {
-        return null;
+        return ResponseEntity.ok(transferService.listAll());
     }
 
     @GetMapping("/allPayments")
     public ResponseEntity<List<PaymentTransactionDto>> allPayments() {
-        return null;
+        return ResponseEntity.ok(paymentSagaService.listAll());
     }
 }

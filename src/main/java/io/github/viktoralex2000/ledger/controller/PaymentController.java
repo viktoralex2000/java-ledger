@@ -1,13 +1,12 @@
 package io.github.viktoralex2000.ledger.controller;
 
+import io.github.viktoralex2000.ledger.config.LedgerProperties;
 import io.github.viktoralex2000.ledger.dto.PaymentTransactionDto;
 import io.github.viktoralex2000.ledger.dto.TopUpRequest;
 import io.github.viktoralex2000.ledger.dto.WithdrawRequest;
-import io.github.viktoralex2000.ledger.model.UserEntity;
+import io.github.viktoralex2000.ledger.security.RateLimitService;
 import io.github.viktoralex2000.ledger.service.IdempotencyService;
-import io.github.viktoralex2000.ledger.service.LedgerProperties;
 import io.github.viktoralex2000.ledger.service.PaymentSagaService;
-import io.github.viktoralex2000.ledger.service.RateLimitService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

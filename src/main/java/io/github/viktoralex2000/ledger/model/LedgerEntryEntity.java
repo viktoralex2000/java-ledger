@@ -28,7 +28,7 @@ import lombok.Getter;
 )
 public class LedgerEntryEntity {
 
-	public enum LedgerEntryType {DEBIT, CREDIT}
+	public enum EntryType {DEBIT, CREDIT}
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +52,7 @@ public class LedgerEntryEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "entry_type", nullable = false, length = 8)
-    private LedgerEntryType entryType;
+    private EntryType entryType;
     //* entry_type : VARCHAR(8)
 
     @Column(name = "amount", nullable = false, precision = 28, scale = 12)
@@ -125,13 +125,13 @@ public class LedgerEntryEntity {
 
 
 
-	public LedgerEntryType getEntryType() {
+	public EntryType getEntryType() {
 		return entryType;
 	}
 
 
 
-	public void setEntryType(LedgerEntryType entryType) {
+	public void setEntryType(EntryType entryType) {
 		this.entryType = entryType;
 	}
 
