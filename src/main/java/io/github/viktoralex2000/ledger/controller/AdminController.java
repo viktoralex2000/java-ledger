@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+//todo доделать безопасность и ROLE_ADMIN
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
