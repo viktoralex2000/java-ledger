@@ -14,15 +14,15 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
-
 @Getter
 
 @Entity
 @Table(name = "users")
 public class UserEntity {
 
-    public enum UserRole { USER, ADMIN, SYSTEM }
-    public enum UserStatus { ACTIVE, LOCKED }
+    public enum UserRole {USER, ADMIN, SYSTEM}
+
+    public enum UserStatus {ACTIVE, LOCKED}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,6 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
 
-    
 
     @Column(name = "role", nullable = false, length = 16)
     private UserRole role = UserRole.USER;
@@ -63,14 +62,11 @@ public class UserEntity {
 
     private Instant createdAt = Instant.now();
 
-    
-
 
     @Column(name = "updated_at", nullable = false)
 
     private Instant updatedAt = Instant.now();
 
-   
     @PrePersist
     void onCreate() {
         createdAt = Instant.now();
@@ -82,28 +78,74 @@ public class UserEntity {
         updatedAt = Instant.now();
     }
 
-    public Long getId() { return id; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPasswordHash() { return passwordHash; }
-    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
-    public UserRole getRole() { return role; }
-    public void setRole(UserRole role) { this.role = role; }
-    public UserStatus getStatus() { return status; }
-    public void setStatus(UserStatus status) { this.status = status; }
-    public int getFailedLoginAttempts() { return failedLoginAttempts; }
-    public void setFailedLoginAttempts(int failedLoginAttempts) { this.failedLoginAttempts = failedLoginAttempts; }
-    public Instant getCreatedAt() { return createdAt; }
-    public Instant getUpdatedAt() { return updatedAt; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
+
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(int failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
 }
-
-
-   
-
 
 /*
     CREATE TABLE IF NOT EXISTS users (

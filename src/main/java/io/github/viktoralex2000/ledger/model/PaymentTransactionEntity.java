@@ -90,9 +90,6 @@ public class PaymentTransactionEntity {
     private Instant updatedAt;
     //* updated_at : TIMESTAMPTZ
 
-
-   
-
     @PrePersist
     private void onCreate() {
         Instant now = Instant.now();

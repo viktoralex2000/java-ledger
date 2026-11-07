@@ -13,7 +13,6 @@ import java.util.Optional;
 
 public interface OutboxEventRepository extends JpaRepository<OutboxEventEntity, Long> {
 
-    //TODO Разобрать отдельно
     @Query(value = """
         SELECT * FROM outbox_events 
         WHERE status = 'PENDING' 
