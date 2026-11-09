@@ -17,6 +17,10 @@ import java.util.List;
 public class ExchangeRateController {
     private final ExchangeRateService exchangeRateService;
 
+    public ExchangeRateController(ExchangeRateService exchangeRateService) {
+        this.exchangeRateService = exchangeRateService;
+    }
+    
     @GetMapping("/list")
     public ResponseEntity<List<ExchangeRateDto>> list(
             @RequestParam String baseCurrency) {

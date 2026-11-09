@@ -22,6 +22,16 @@ public class TransferController {
     private final RateLimitService rateLimitService;
     private final LedgerProperties ledgerProperties;
 
+    public TransferController(TransferService transferService,
+            IdempotencyService idempotencyService,
+            RateLimitService rateLimitService,
+            LedgerProperties ledgerProperties) {
+this.transferService = transferService;
+this.idempotencyService = idempotencyService;
+this.rateLimitService = rateLimitService;
+this.ledgerProperties = ledgerProperties;
+}
+    
     //todo исправить как дойдём до безопасности
     @PostMapping("/execute")
     public ResponseEntity<?> transfer(
