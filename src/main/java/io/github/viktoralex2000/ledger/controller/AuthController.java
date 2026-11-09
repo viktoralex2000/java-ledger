@@ -4,6 +4,9 @@ import io.github.viktoralex2000.ledger.dto.*;
 import io.github.viktoralex2000.ledger.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
 
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+    
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(authService.register(registerRequest));
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
     }
 
     @PostMapping("/login")
@@ -29,9 +36,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestBody RefreshRequest refreshRequest) {
-        authService.logout(refreshRequest.refreshToken());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> logout(@RequestBody(required = false) RefreshRequest request) {
+        authService.logout(request == null ? null : request.refreshToken());
+        return ResponseEntity.noContent().build();
     }
 
     //todo исправить как дойдём до безопасности
