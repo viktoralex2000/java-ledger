@@ -4,6 +4,8 @@ import io.github.viktoralex2000.ledger.dto.AuthResponse;
 import io.github.viktoralex2000.ledger.dto.LoginRequest;
 import io.github.viktoralex2000.ledger.dto.RegisterRequest;
 import io.github.viktoralex2000.ledger.dto.UserDto;
+import io.github.viktoralex2000.ledger.model.UserEntity;
+import io.github.viktoralex2000.ledger.security.UserPrincipal;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +26,7 @@ public class AuthService {
     public void logout(String token) {
     }
 
-    public UserDto me(String token) {
+    public UserDto me(UserEntity user) {
         return null;
     }
 }

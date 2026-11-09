@@ -49,4 +49,8 @@ public class UserPrincipal implements UserDetails {
     public String getUsername() {
         return user.getEmail();
     }
+
+    public UserEntity getUser() {
+        return user;
+    }
 }

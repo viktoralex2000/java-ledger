@@ -20,7 +20,9 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    //Расшифровщик токенов
     private final JwtService jwtService;
+    //Умеет искать юзера в базе по email
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -29,6 +31,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse httpServletResponse,
             FilterChain filterChain) throws ServletException, IOException {
         String authHeader = httpServletRequest.getHeader("Authorization");
+        //Если клиент авторизован - у него есть токен, то метод идет дальше
+        //Если нет, то данная проверка обрывается, а запрос передаётся дальше по цепочке
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
             return;
@@ -36,24 +40,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         authHeader = authHeader.substring(7);
         try {
             String userEmail = jwtService.parse(authHeader).getSubject();
-
-            // Проверяем, что email есть, и мы еще не авторизованы в этом запросе
+            //Проверяем наличие эмейл и что пользователь действительно
+            // авторизован из контекста секьюрити этого потока
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                // Ищем пользователя в базе
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-
-                // Создаем объект аутентификации
+                //Создаем объект аутентификации - юзер, пароль null так как подлинность доказана, и роли/права
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
                         userDetails.getAuthorities()
                 );
-
-                // Добавляем детали (опционально, но считается хорошим тоном)
+                // Добавляем детали - ip адрес клиента и id http сессии (у нас null из за STATELESS)
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-
-                // Кладем в контекст Spring Security
+                // Кладём собранный объект аутентификации "пропуск" в контекст безопасности данного запроса.
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         } catch (JwtException | IllegalArgumentException e) {
@@ -61,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Запрос пойдет дальше, но как анонимный.
         }
 
-        // И САМОЕ ВАЖНОЕ: в самом конце метода пропускаем запрос дальше!
+        // Обязательно пропускаем запрос дальше
         filterChain.doFilter(httpServletRequest, httpServletResponse);
 
 

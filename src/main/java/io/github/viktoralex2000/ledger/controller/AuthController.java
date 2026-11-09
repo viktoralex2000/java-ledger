@@ -1,10 +1,12 @@
 package io.github.viktoralex2000.ledger.controller;
 
 import io.github.viktoralex2000.ledger.dto.*;
+import io.github.viktoralex2000.ledger.security.UserPrincipal;
 import io.github.viktoralex2000.ledger.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,10 +36,9 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    //todo исправить как дойдём до безопасности
     @GetMapping("/me")
-    public ResponseEntity<UserDto> me(@RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(authService.me(token));
+    public ResponseEntity<UserDto> me(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        return ResponseEntity.ok(authService.me(userPrincipal.getUser()));
     }
 
 }
