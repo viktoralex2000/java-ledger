@@ -36,6 +36,7 @@ public class SecurityConfig {
         //Требуем токен у всех запросов кроме /api/auth/**
         httpSecurity.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SYSTEM")
                 .anyRequest().authenticated());
         //Прежде чем проверять логин и пароль пропустить через jwtAuthenticationFilter
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

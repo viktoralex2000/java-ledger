@@ -20,6 +20,6 @@ public class ExchangeRateController {
     @GetMapping("/list")
     public ResponseEntity<List<ExchangeRateDto>> list(
             @RequestParam String baseCurrency) {
-        return null;
+        return ResponseEntity.ok(exchangeRateService.list(baseCurrency));
     }
 }
