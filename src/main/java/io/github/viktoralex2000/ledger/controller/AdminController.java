@@ -22,16 +22,16 @@ public class AdminController {
     private final TransferService transferService;
     private final PaymentSagaService paymentSagaService;
 
-    @PatchMapping("/upsertRate")
+    @PutMapping("/upsertRate")
     public ResponseEntity<ExchangeRateDto> upsertRate(
             @Valid @RequestBody ExchangeRateUpdateRequest exchangeRateUpdateRequest) {
         return ResponseEntity.ok(exchangeRateService.upsert(exchangeRateUpdateRequest));
     }
 
-    @DeleteMapping("/deleteRate")
+    @DeleteMapping("/deleteRate/{baseCurrency}/{quoteCurrency}")
     public ResponseEntity<Void> deleteRate(
-            @RequestParam String baseCurrency,
-            @RequestParam String quoteCurrency) {
+            @PathVariable String baseCurrency,
+            @PathVariable String quoteCurrency) {
         exchangeRateService.delete(baseCurrency, quoteCurrency);
         return ResponseEntity.ok().build();
     }

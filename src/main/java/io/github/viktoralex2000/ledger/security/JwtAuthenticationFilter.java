@@ -1,6 +1,5 @@
 package io.github.viktoralex2000.ledger.security;
 
-import io.github.viktoralex2000.ledger.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -62,7 +61,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Обязательно пропускаем запрос дальше
         filterChain.doFilter(httpServletRequest, httpServletResponse);
-
 
     }
 }
