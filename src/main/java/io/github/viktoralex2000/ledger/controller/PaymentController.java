@@ -5,11 +5,13 @@ import io.github.viktoralex2000.ledger.dto.PaymentTransactionDto;
 import io.github.viktoralex2000.ledger.dto.TopUpRequest;
 import io.github.viktoralex2000.ledger.dto.WithdrawRequest;
 import io.github.viktoralex2000.ledger.security.RateLimitService;
+import io.github.viktoralex2000.ledger.security.UserPrincipal;
 import io.github.viktoralex2000.ledger.service.IdempotencyService;
 import io.github.viktoralex2000.ledger.service.PaymentSagaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,43 +20,51 @@ import java.util.List;
 @RequestMapping("/api/payment")
 @RequiredArgsConstructor
 public class PaymentController {
-    private final PaymentSagaService sagaService;
+    //todo защита от повтороного запроса на тот же перевод
     private final IdempotencyService idempotencyService;
+    private final PaymentSagaService paymentSagaService;
+    //todo защита от множественных запросов в короткое время
     private final RateLimitService rateLimitService;
+    //todo вероятно надо убрать в сервис
     private final LedgerProperties ledgerProperties;
 
-    //todo исправить как дойдём до безопасности
     @PostMapping("/topUp/{walletId}")
-    public ResponseEntity<?> topUp(
-            /*UserEntity user,*/
+    public ResponseEntity<PaymentTransactionDto> topUp(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable Long walletId,
             @Valid @RequestBody TopUpRequest topUpRequest,
             @RequestHeader("X-Idempotency-Key") String idempotencyKey) {
-        return null;
+        return ResponseEntity.ok(paymentSagaService.topUp(
+                userPrincipal.getUser(),
+                walletId,
+                topUpRequest,
+                idempotencyKey));
     }
 
-    //todo исправить как дойдём до безопасности
     @PostMapping("/withdraw/{walletId}")
-    public ResponseEntity<?> withdraw(
-            /*UserEntity user,*/
+    public ResponseEntity<PaymentTransactionDto> withdraw(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable Long walletId,
             @Valid @RequestBody WithdrawRequest withdrawRequest,
             @RequestHeader("X-Idempotency-Key") String idempotencyKey) {
-        return null;
+        return ResponseEntity.ok(paymentSagaService.withDraw(
+                userPrincipal.getUser(),
+                walletId,
+                withdrawRequest,
+                idempotencyKey));
     }
 
-    //todo исправить как дойдём до безопасности
     @GetMapping("/list")
     public ResponseEntity<List<PaymentTransactionDto>> list(
-            /*UserEntity user*/) {
-        return null;
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        return ResponseEntity.ok(paymentSagaService.list(userPrincipal.getUser().getId()));
     }
 
-    //todo исправить как дойдём до безопасности
     @GetMapping("/get/{transactionId}")
     public ResponseEntity<PaymentTransactionDto> get(
-            /*UserEntity user,*/
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable Long transactionId) {
-        return null;
+        return ResponseEntity.ok(paymentSagaService.get(transactionId,
+                userPrincipal.getUser().getId()));
     }
 }

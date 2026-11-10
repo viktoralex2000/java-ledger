@@ -10,7 +10,10 @@ import java.util.List;
 @Service
 public class TransferService {
 
-    public TransferDto transfer(UserEntity user, TransferRequest transferRequest) {
+    public TransferDto transfer(
+            UserEntity user,
+            TransferRequest transferRequest,
+            String idempotencyKey) {
         return null;
     }
 
