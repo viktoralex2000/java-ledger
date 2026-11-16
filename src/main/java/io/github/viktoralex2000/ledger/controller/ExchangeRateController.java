@@ -13,9 +13,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/exchange")
-@RequiredArgsConstructor
 public class ExchangeRateController {
     private final ExchangeRateService exchangeRateService;
+
+    public ExchangeRateController(ExchangeRateService exchangeRateService) {
+        this.exchangeRateService = exchangeRateService;
+    }
 
     @GetMapping("/list")
     public ResponseEntity<List<ExchangeRateDto>> list(

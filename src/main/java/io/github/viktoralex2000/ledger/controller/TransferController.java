@@ -17,13 +17,22 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/transfer")
-@RequiredArgsConstructor
 public class TransferController {
     private final TransferService transferService;
     //todo проработать нижние 3 сервиса
     private final IdempotencyService idempotencyService;
     private final RateLimitService rateLimitService;
     private final LedgerProperties ledgerProperties;
+
+    public TransferController(TransferService transferService,
+                              IdempotencyService idempotencyService,
+                              RateLimitService rateLimitService,
+                              LedgerProperties ledgerProperties) {
+        this.transferService = transferService;
+        this.idempotencyService = idempotencyService;
+        this.rateLimitService = rateLimitService;
+        this.ledgerProperties = ledgerProperties;
+    }
 
 
     @PostMapping("/execute")

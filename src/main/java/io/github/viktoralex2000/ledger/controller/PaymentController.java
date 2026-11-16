@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/payment")
-@RequiredArgsConstructor
 public class PaymentController {
     //todo защита от повтороного запроса на тот же перевод
     private final IdempotencyService idempotencyService;
@@ -27,6 +26,16 @@ public class PaymentController {
     private final RateLimitService rateLimitService;
     //todo вероятно надо убрать в сервис
     private final LedgerProperties ledgerProperties;
+
+    public PaymentController(IdempotencyService idempotencyService,
+                             PaymentSagaService paymentSagaService,
+                             RateLimitService rateLimitService,
+                             LedgerProperties ledgerProperties) {
+        this.idempotencyService = idempotencyService;
+        this.paymentSagaService = paymentSagaService;
+        this.rateLimitService = rateLimitService;
+        this.ledgerProperties = ledgerProperties;
+    }
 
     @PostMapping("/topUp/{walletId}")
     public ResponseEntity<PaymentTransactionDto> topUp(

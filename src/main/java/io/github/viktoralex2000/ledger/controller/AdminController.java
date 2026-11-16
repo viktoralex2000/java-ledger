@@ -16,11 +16,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
-@RequiredArgsConstructor
 public class AdminController {
     private final ExchangeRateService exchangeRateService;
     private final TransferService transferService;
     private final PaymentSagaService paymentSagaService;
+
+    public AdminController(ExchangeRateService exchangeRateService,
+                           TransferService transferService,
+                           PaymentSagaService paymentSagaService) {
+        this.exchangeRateService = exchangeRateService;
+        this.transferService = transferService;
+        this.paymentSagaService = paymentSagaService;
+    }
 
     @PutMapping("/upsertRate")
     public ResponseEntity<ExchangeRateDto> upsertRate(
