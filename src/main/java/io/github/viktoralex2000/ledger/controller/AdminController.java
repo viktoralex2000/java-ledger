@@ -8,7 +8,6 @@ import io.github.viktoralex2000.ledger.service.ExchangeRateService;
 import io.github.viktoralex2000.ledger.service.PaymentSagaService;
 import io.github.viktoralex2000.ledger.service.TransferService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

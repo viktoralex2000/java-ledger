@@ -31,7 +31,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
-import java.time.LocalTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -99,7 +98,7 @@ public class AuthControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/register")
                         //Прикрепить заголовок о том что мы отправляем JSON - для спринга.
                         .contentType(MediaType.APPLICATION_JSON)
-                        //В тело запроса положи переведённый в джейсон объект registerRequest
+                        //В тело запроса положим переведённый в джейсон объект registerRequest
                         .content(objectMapper.writeValueAsString(registerRequest)))
                 //Ожидание статуса 201
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -180,7 +179,6 @@ public class AuthControllerTest {
     @Test
     @DisplayName("Успешная деаутентификация пользователя")
     void logout_Success() throws Exception {
-
 
         RefreshRequest refreshRequest = new RefreshRequest(
                 "refresh-token"

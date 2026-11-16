@@ -6,16 +6,16 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 public record ExchangeRateDto(
+        BigDecimal rate,
         String baseCurrency,
         String quoteCurrency,
-        BigDecimal rate,
         Instant updatedAt
 ) {
     public static ExchangeRateDto from(ExchangeRateEntity exchangeRate) {
         return new ExchangeRateDto(
+                exchangeRate.getRate(),
                 exchangeRate.getBaseCurrency(),
                 exchangeRate.getQuoteCurrency(),
-                exchangeRate.getRate(),
                 exchangeRate.getUpdatedAt()
         );
     }

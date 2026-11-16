@@ -4,7 +4,6 @@ import io.github.viktoralex2000.ledger.dto.*;
 import io.github.viktoralex2000.ledger.security.UserPrincipal;
 import io.github.viktoralex2000.ledger.service.AuthService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
