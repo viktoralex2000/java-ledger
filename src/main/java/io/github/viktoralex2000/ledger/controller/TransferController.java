@@ -7,7 +7,7 @@ import io.github.viktoralex2000.ledger.security.RateLimitService;
 import io.github.viktoralex2000.ledger.service.IdempotencyService;
 import io.github.viktoralex2000.ledger.service.TransferService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/transfer")
-@RequiredArgsConstructor
+
 public class TransferController {
     private final TransferService transferService;
     private final IdempotencyService idempotencyService;

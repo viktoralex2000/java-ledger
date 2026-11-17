@@ -17,11 +17,10 @@ import io.github.viktoralex2000.ledger.dto.UserDto;
 import io.github.viktoralex2000.ledger.model.UserEntity;
 import io.github.viktoralex2000.ledger.service.AuthService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
+
 public class AuthController {
     private final AuthService authService;
 

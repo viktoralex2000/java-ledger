@@ -7,7 +7,6 @@ import io.github.viktoralex2000.ledger.dto.WalletDto;
 import io.github.viktoralex2000.ledger.repository.LedgerEntryRepository;
 import io.github.viktoralex2000.ledger.service.WalletService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/wallet")
-@RequiredArgsConstructor
+
 public class WalletController {
     private final WalletService walletService;
     private final LedgerEntryRepository ledgerEntryRepository;

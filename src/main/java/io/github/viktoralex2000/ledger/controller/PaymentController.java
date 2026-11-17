@@ -21,11 +21,10 @@ import io.github.viktoralex2000.ledger.security.RateLimitService;
 import io.github.viktoralex2000.ledger.service.IdempotencyService;
 import io.github.viktoralex2000.ledger.service.PaymentSagaService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/payment")
-@RequiredArgsConstructor
+
 public class PaymentController {
     private final PaymentSagaService sagaService;
     private final IdempotencyService idempotencyService;

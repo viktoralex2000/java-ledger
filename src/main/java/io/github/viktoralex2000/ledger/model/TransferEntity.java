@@ -16,9 +16,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import lombok.Getter;
 
-@Getter
+
 @Entity
 @Table(name = "transfers")
 public class TransferEntity {

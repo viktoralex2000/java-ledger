@@ -8,7 +8,7 @@ import io.github.viktoralex2000.ledger.service.ExchangeRateService;
 import io.github.viktoralex2000.ledger.service.PaymentSagaService;
 import io.github.viktoralex2000.ledger.service.TransferService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +17,7 @@ import java.util.List;
 //todo доделать безопасность и ROLE_ADMIN
 @RestController
 @RequestMapping("/api/admin")
-@RequiredArgsConstructor
+
 public class AdminController {
     private final ExchangeRateService exchangeRateService;
     private final TransferService transferService;
