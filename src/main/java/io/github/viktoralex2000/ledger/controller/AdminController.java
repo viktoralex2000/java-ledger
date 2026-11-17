@@ -21,25 +21,29 @@ public class AdminController {
     private final PaymentSagaService paymentSagaService;
 
     public AdminController(ExchangeRateService exchangeRateService,
-                           TransferService transferService,
-                           PaymentSagaService paymentSagaService) {
-        this.exchangeRateService = exchangeRateService;
-        this.transferService = transferService;
-        this.paymentSagaService = paymentSagaService;
-    }
+
+            TransferService transferService,
+            PaymentSagaService paymentSagaService) {
+this.exchangeRateService = exchangeRateService;
+this.transferService = transferService;
+this.paymentSagaService = paymentSagaService;
+}
+    
+    
 
     @PutMapping("/upsertRate")
+
     public ResponseEntity<ExchangeRateDto> upsertRate(
             @Valid @RequestBody ExchangeRateUpdateRequest exchangeRateUpdateRequest) {
         return ResponseEntity.ok(exchangeRateService.upsert(exchangeRateUpdateRequest));
     }
 
-    @DeleteMapping("/deleteRate/{baseCurrency}/{quoteCurrency}")
-    public ResponseEntity<Void> deleteRate(
-            @PathVariable String baseCurrency,
-            @PathVariable String quoteCurrency) {
-        exchangeRateService.delete(baseCurrency, quoteCurrency);
-        return ResponseEntity.ok().build();
+
+    @DeleteMapping("/exchange-rates/{base}/{quote}")
+   public ResponseEntity<Void> deleteRate(@PathVariable String base, @PathVariable String quote) {
+        exchangeRateService.delete(base, quote);
+        return ResponseEntity.noContent().build();
+
     }
 
     @GetMapping("/allTransfers")
