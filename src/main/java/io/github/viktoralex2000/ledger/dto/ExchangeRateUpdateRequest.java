@@ -20,6 +20,6 @@ public record ExchangeRateUpdateRequest(
         @NotBlank
         @Pattern(regexp = "[A-Z]{3}")
         String quoteCurrency
-
+        //Коммит тут
 ) {
 }
