@@ -1,6 +1,8 @@
 package io.github.viktoralex2000.ledger.service;
 
 import io.github.viktoralex2000.ledger.dto.CreateWalletRequest;
+import io.github.viktoralex2000.ledger.dto.LedgerEntryDto;
+import io.github.viktoralex2000.ledger.dto.PageResponse;
 import io.github.viktoralex2000.ledger.dto.WalletDto;
 import io.github.viktoralex2000.ledger.model.WalletEntity;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,11 @@ public class WalletService {
         return null;
     }
 
+    public PageResponse<LedgerEntryDto> ledger(
+            Long userId, Long walletId, int page, int size) {
+        return null;
+    }
+
     public WalletEntity requireOwned(Long walletId, Long userId) {
         return null;
     }
@@ -28,4 +35,6 @@ public class WalletService {
     public WalletEntity findOwned(Long walletId, Long userId) {
         return null;
     }
+
+
 }

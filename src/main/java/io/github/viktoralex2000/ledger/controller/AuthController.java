@@ -1,28 +1,30 @@
 package io.github.viktoralex2000.ledger.controller;
 
 import io.github.viktoralex2000.ledger.dto.*;
+import io.github.viktoralex2000.ledger.security.UserPrincipal;
 import io.github.viktoralex2000.ledger.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-    
+
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
+
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(registerRequest));
+
     }
 
     @PostMapping("/login")
@@ -41,10 +43,9 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-    //todo исправить как дойдём до безопасности
     @GetMapping("/me")
-    public ResponseEntity<UserDto> me(@RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(authService.me(token));
+    public ResponseEntity<UserDto> me(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        return ResponseEntity.ok(authService.me(userPrincipal.getUser()));
     }
 
 }

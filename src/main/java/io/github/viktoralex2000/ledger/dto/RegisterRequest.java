@@ -1,24 +1,20 @@
 package io.github.viktoralex2000.ledger.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 
 public record RegisterRequest(
 
         String firstName,
 
         String lastName,
-        
+
         @NotBlank
         @Email
-        @Max(255)
+        @Size(max = 255)
         String email,
-        
+
         @NotBlank
-        @Min(8)
-        @Max(72)
+        @Size(min = 8, max = 72)
         String password
 
 ) {

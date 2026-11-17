@@ -2,6 +2,7 @@ package io.github.viktoralex2000.ledger.service;
 
 import io.github.viktoralex2000.ledger.dto.PaymentTransactionDto;
 import io.github.viktoralex2000.ledger.dto.TopUpRequest;
+import io.github.viktoralex2000.ledger.dto.WithdrawRequest;
 import io.github.viktoralex2000.ledger.model.UserEntity;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class PaymentSagaService {
     public PaymentTransactionDto withDraw(
             UserEntity user,
             Long walletId,
-            TopUpRequest topUpRequest,
+            WithdrawRequest topUpRequest,
             String idempotencyKey) {
         return null;
     }
