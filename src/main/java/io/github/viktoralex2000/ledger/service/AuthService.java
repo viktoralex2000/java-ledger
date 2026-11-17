@@ -24,7 +24,7 @@ public class AuthService {
     public void logout(String token) {
     }
 
-    public UserDto me(String token) {
+    public UserDto me(Long long1) {
         return null;
     }
 }

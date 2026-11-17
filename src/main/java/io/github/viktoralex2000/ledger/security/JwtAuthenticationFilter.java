@@ -1,6 +1,20 @@
 package io.github.viktoralex2000.ledger.security;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import io.github.viktoralex2000.ledger.model.UserEntity;
 import io.github.viktoralex2000.ledger.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,69 +22,47 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-import org.example.firstpetprojectexchanger.security.JwtService;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    
+	private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+	
+	private final JwtService jwtService;
+    //private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     public JwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
+        
     }
     
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse,
-            FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = httpServletRequest.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
-            return;
-        }
-        authHeader = authHeader.substring(7);
-        try {
-            String userEmail = jwtService.parse(authHeader).getSubject();
-
-            // Проверяем, что email есть, и мы еще не авторизованы в этом запросе
-            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                // Ищем пользователя в базе
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-
-                // Создаем объект аутентификации
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-
-                // Добавляем детали (опционально, но считается хорошим тоном)
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-
-                // Кладем в контекст Spring Security
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+            try {
+                Claims claims = jwtService.parse(token);
+                String email = claims.getSubject();
+                userRepository.findByEmailIgnoreCase(email).ifPresent(user -> {
+                    if (user.getStatus() != UserEntity.UserStatus.ACTIVE) {
+                        SecurityContextHolder.clearContext();
+                        return;
+                    }
+                    var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+                    var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                });
+            } catch (JwtException | IllegalArgumentException ex) {
+                log.debug("Invalid JWT: {}", ex.getMessage());
+                SecurityContextHolder.clearContext();
             }
-        } catch (JwtException | IllegalArgumentException e) {
-            // Если токен битый, мы просто ничего не делаем.
-            // Запрос пойдет дальше, но как анонимный.
         }
-
-        // И САМОЕ ВАЖНОЕ: в самом конце метода пропускаем запрос дальше!
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
-
-
+        filterChain.doFilter(request, response);
     }
 }
