@@ -17,9 +17,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import lombok.Getter;
 
-@Getter
+
 @Entity
 @Table(name = "payment_transactions")
 public class PaymentTransactionEntity {

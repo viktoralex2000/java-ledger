@@ -12,9 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import lombok.Getter;
 
-@Getter
+
 
 @Entity
 @Table(name = "users")

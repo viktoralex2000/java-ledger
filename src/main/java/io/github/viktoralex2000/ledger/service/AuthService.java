@@ -25,7 +25,7 @@ public class AuthService {
     public void logout(String token) {
     }
 
-    public UserDto me(UserEntity user) {
+    public UserDto me(Long userId) {
         return null;
     }
 

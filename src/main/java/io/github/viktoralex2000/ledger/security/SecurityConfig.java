@@ -1,12 +1,17 @@
 package io.github.viktoralex2000.ledger.security;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,59 +21,60 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RestAuthenticationEntryPoint entryPoint;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+                          RestAuthenticationEntryPoint entryPoint) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.entryPoint = entryPoint;
+    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        //Так как мы не используем куки, отключаем просто отключаем защиту от них.
-        httpSecurity.csrf(csrf -> csrf.disable());
-        //Выбираем не хранить в памяти сессию клиента, вместо этого полагаться на срок жизни authToken
-        httpSecurity.sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        //Обязуем Spring Security применить corsConfigurationSource
-        httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-        //Требуем токен у всех запросов кроме /api/auth/**
-        httpSecurity.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SYSTEM")
-                .anyRequest().authenticated());
-        //Прежде чем проверять логин и пароль пропустить через jwtAuthenticationFilter
-        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return httpSecurity.build();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(eh -> eh.authenticationEntryPoint(entryPoint))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET, "/", "/index.html", "/js/**", "/css/**").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/exchange-rates/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/actuator/health", "/actuator/info").permitAll()
+                        .requestMatchers("/actuator/**").hasRole("ADMIN")
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        //Пустой бланк "разрешения"
-        CorsConfiguration configuration = new CorsConfiguration();
-        //Откуда можно отправлять запросы? (пока даём право приходить отовсюду)
-        configuration.setAllowedOrigins(List.of("*"));
-        //Какие методы можно использовать
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-
-        //"Доставщик" данных с бланка.
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Idempotency-Key"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        //Взять это бланк с правилами и повесить его на все эндпоинты нашего сервера.
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
-
 }

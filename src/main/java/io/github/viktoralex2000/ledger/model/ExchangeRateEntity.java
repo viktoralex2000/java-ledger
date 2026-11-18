@@ -1,12 +1,11 @@
 package io.github.viktoralex2000.ledger.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
-@Getter
+
 @Entity
 @Table(name = "exchange_rates",
         uniqueConstraints = @UniqueConstraint(

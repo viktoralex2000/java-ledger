@@ -16,9 +16,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.Getter;
 
-@Getter
+
 @Entity
 @Table(name = "ledger_entries",
         uniqueConstraints = @UniqueConstraint(

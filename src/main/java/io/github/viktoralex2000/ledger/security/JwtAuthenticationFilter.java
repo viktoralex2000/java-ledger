@@ -1,71 +1,67 @@
 package io.github.viktoralex2000.ledger.security;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import io.github.viktoralex2000.ledger.model.UserEntity;
+import io.github.viktoralex2000.ledger.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
 
 @Component
+
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    //Расшифровщик токенов
-    private final JwtService jwtService;
-    //Умеет искать юзера в базе по email
-    private final UserDetailsService userDetailsService;
+    
+	private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+	
+	private final JwtService jwtService;
+    //private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository) {
         this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
+        
     }
-
+    
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse,
-            FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = httpServletRequest.getHeader("Authorization");
-        //Если клиент авторизован - у него есть токен, то метод идет дальше
-        //Если нет, то данная проверка обрывается, а запрос передаётся дальше по цепочке
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
-            return;
-        }
-        authHeader = authHeader.substring(7);
-        try {
-            String userEmail = jwtService.parse(authHeader).getSubject();
-            //Проверяем наличие эмейл и что пользователь действительно
-            // авторизован из контекста секьюрити этого потока
-            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-                //Создаем объект аутентификации - юзер, пароль null так как подлинность доказана, и роли/права
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                // Добавляем детали - ip адрес клиента и id http сессии (у нас null из за STATELESS)
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                // Кладём собранный объект аутентификации "пропуск" в контекст безопасности данного запроса.
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+            try {
+                Claims claims = jwtService.parse(token);
+                String email = claims.getSubject();
+                userRepository.findByEmailIgnoreCase(email).ifPresent(user -> {
+                    if (user.getStatus() != UserEntity.UserStatus.ACTIVE) {
+                        SecurityContextHolder.clearContext();
+                        return;
+                    }
+                    var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+                    var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                });
+            } catch (JwtException | IllegalArgumentException ex) {
+                log.debug("Invalid JWT: {}", ex.getMessage());
+                SecurityContextHolder.clearContext();
             }
-        } catch (JwtException | IllegalArgumentException e) {
-            // Если токен битый, мы просто ничего не делаем.
-            // Запрос пойдет дальше, но как анонимный.
         }
-
-        // Обязательно пропускаем запрос дальше
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
-
+        filterChain.doFilter(request, response);
     }
 }

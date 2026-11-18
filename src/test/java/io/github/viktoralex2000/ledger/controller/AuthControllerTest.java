@@ -3,7 +3,6 @@ package io.github.viktoralex2000.ledger.controller;
 import io.github.viktoralex2000.ledger.dto.*;
 import io.github.viktoralex2000.ledger.model.UserEntity;
 import io.github.viktoralex2000.ledger.security.JwtAuthenticationFilter;
-import io.github.viktoralex2000.ledger.security.UserPrincipal;
 import io.github.viktoralex2000.ledger.service.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -216,11 +215,11 @@ public class AuthControllerTest {
         );
 
         //Если сервису передадут любой объект UserEntity то пусть он просто вернет этот userDto
-        Mockito.when(authService.me(ArgumentMatchers.any(UserEntity.class))).thenReturn(userDto);
+        Mockito.when(authService.me(ArgumentMatchers.any(Long.class))).thenReturn(userDto);
 
         //Создание объекта аутентификации
         UsernamePasswordAuthenticationToken upaToken = new UsernamePasswordAuthenticationToken(
-                new UserPrincipal(user), //Оборачиваем user в Principal
+                new UserEntity(), //Оборачиваем user в Principal
                 null, //Пароль не нужен
                 List.of() //Список ролей тут не важен
         );
@@ -242,7 +241,7 @@ public class AuthControllerTest {
 
             //Проверка что метод был вызван, и всего 1 раз
             Mockito.verify(authService, Mockito.times(1))
-                    .me(ArgumentMatchers.any(UserEntity.class));
+                    .me(ArgumentMatchers.any(Long.class));
         } finally {
             SecurityContextHolder.clearContext();
         }
