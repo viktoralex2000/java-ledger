@@ -53,4 +53,5 @@ public class UserPrincipal implements UserDetails {
     public UserEntity getUser() {
         return user;
     }
+
 }

@@ -81,7 +81,7 @@ public class AuthControllerTest {
                 "Human@human.com",
                 "password11"
         );
-        //Создаём то что дожен ответить сервер после успешной регистрации
+        //Создаём то что должен ответить сервер после успешной регистрации
         AuthResponse authResponse = new AuthResponse(
                 "access-token",
                 "Bearer",
@@ -197,7 +197,6 @@ public class AuthControllerTest {
                 .logout(any(String.class));
 
     }
-
 
     @Test
     @DisplayName("Успешное получение текущего пользователя")

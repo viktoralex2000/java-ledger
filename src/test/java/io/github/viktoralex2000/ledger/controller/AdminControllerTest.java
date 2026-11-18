@@ -28,7 +28,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-
 @WebMvcTest(
         controllers = AdminController.class,
         excludeFilters = @ComponentScan.Filter(
@@ -77,11 +76,18 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.quoteCurrency").value("RDE"))
                 .andExpect(jsonPath("$.rate").value("10"));
 
-
         Mockito.verify(exchangeRateService, Mockito.times(1))
                 .upsert(any(ExchangeRateUpdateRequest.class));
 
     }
+
+    /*
+    @DeleteMapping("/exchange-rates/{base}/{quote}")
+    public ResponseEntity<Void> deleteRate(@PathVariable String base, @PathVariable String quote) {
+        exchangeRateService.delete(base, quote);
+        return ResponseEntity.noContent().build();
+    }
+     */
 
     @Test
     @DisplayName("Успешное удаление курса валют")
@@ -91,7 +97,7 @@ public class AdminControllerTest {
                 ArgumentMatchers.any(String.class));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/admin/deleteRate/JTA/RDE"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Mockito.verify(exchangeRateService, Mockito.times(1))
                 .delete("JTA", "RDE");
