@@ -6,6 +6,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
+import org.example.firstpetprojectexchanger.security.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +26,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     //Умеет искать юзера в базе по email
     private final UserDetailsService userDetailsService;
 
+    public JwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository) {
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
+    }
+    
     @Override
     protected void doFilterInternal(
             HttpServletRequest httpServletRequest,

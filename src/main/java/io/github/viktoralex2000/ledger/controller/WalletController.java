@@ -22,6 +22,11 @@ public class WalletController {
         this.walletService = walletService;
     }
 
+    public WalletController(WalletService walletService, LedgerEntryRepository ledgerEntryRepository) {
+        this.walletService = walletService;
+        this.ledgerEntryRepository = ledgerEntryRepository;
+    }
+    
     @PostMapping("/create")
     public ResponseEntity<WalletDto> create(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
