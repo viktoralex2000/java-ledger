@@ -7,10 +7,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import org.apache.coyote.BadRequestException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import io.github.viktoralex2000.ledger.config.LedgerProperties;
+import io.github.viktoralex2000.ledger.exception.BadRequestException;
 import io.github.viktoralex2000.ledger.model.ExchangeRateEntity;
 import io.github.viktoralex2000.ledger.repository.ExchangeRateRepository;
 

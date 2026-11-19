@@ -15,7 +15,7 @@ public record TransferRequest(
         @NotNull
         Long toWalletId,
 
-        @NotNull
+       
         @DecimalMin(value = "0.01", message = "Amount at least 0.01")
         @DecimalMax(value = "1000000", message = "Amount too large")
         @Digits(integer = 10, fraction = 2)
