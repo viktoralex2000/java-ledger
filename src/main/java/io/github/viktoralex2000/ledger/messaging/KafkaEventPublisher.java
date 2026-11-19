@@ -12,11 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
-/**
- * Publishes outbox events to Kafka with acks=all (guaranteed delivery).
- * The send is awaited so the poller can mark the event PUBLISHED only after
- * the broker acknowledged the record.
- */
+
 @Component
 public class KafkaEventPublisher {
 

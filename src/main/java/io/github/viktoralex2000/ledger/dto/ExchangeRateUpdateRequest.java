@@ -9,15 +9,15 @@ import jakarta.validation.constraints.Pattern;
 
 public record ExchangeRateUpdateRequest(
 
-        @NotNull
+        
         @DecimalMin(value = "0.000000000001", message = "Positive only")
         BigDecimal rate,
 
-        @NotBlank 
+        
         @Pattern(regexp = "[A-Z]{3}")
         String baseCurrency,
 
-        @NotBlank
+        
         @Pattern(regexp = "[A-Z]{3}")
         String quoteCurrency
         //Коммит тут

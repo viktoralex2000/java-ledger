@@ -21,7 +21,7 @@ public final class KafkaTopics {
         return topic + DLT_SUFFIX;
     }
 
-    /** Routes an outbox event (by aggregate type) to its Kafka topic. */
+    
     public static String topicFor(String aggregateType) {
         return switch (aggregateType) {
             case "transfer" -> TRANSFERS;

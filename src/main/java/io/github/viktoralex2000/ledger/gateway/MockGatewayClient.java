@@ -15,11 +15,7 @@ import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Client for the simulated external acquiring gateway (mock-gateway service).
- * The gateway can answer slowly or fail entirely — those failures are treated
- * as saga failures and trigger compensation.
- */
+
 @Component
 public class MockGatewayClient {
 
@@ -42,12 +38,12 @@ public class MockGatewayClient {
                 .build();
     }
 
-    /** Card charge (wallet top-up). */
+    
     public GatewayResponse charge(String currency, String reference, java.math.BigDecimal amount) {
         return call("/v1/charges", new GatewayChargeRequest(amount, currency, reference));
     }
 
-    /** Bank payout (wallet withdrawal). */
+    
     public GatewayResponse payout(String currency, String reference, java.math.BigDecimal amount) {
         return call("/v1/payouts", new GatewayChargeRequest(amount, currency, reference));
     }

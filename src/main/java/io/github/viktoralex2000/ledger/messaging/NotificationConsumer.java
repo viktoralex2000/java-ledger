@@ -9,12 +9,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
-/**
- * Notification consumer demonstrating the retry-topic + DLT pattern:
- * <p>{@code ledger.notifications} → on failure → {@code ledger.notifications.retry}
- * → on failure → {@code ledger.notifications.dlt}.
- * <p>Consumers must be idempotent because outbox delivery is at-least-once.
- */
+
 @Component
 public class NotificationConsumer {
 

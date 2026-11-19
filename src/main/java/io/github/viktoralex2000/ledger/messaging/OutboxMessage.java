@@ -2,7 +2,7 @@ package io.github.viktoralex2000.ledger.messaging;
 
 import java.time.Instant;
 
-/** Envelope written to Kafka topics by the outbox poller. */
+
 public record OutboxMessage(
         String eventId,
         String aggregateType,
