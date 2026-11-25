@@ -1,4 +1,4 @@
-package io.github.viktoralex2000.ledger.controller;
+package io.github.viktoralex2000.ledger.integration;
 
 
 import tools.jackson.databind.JsonNode;
@@ -7,6 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+
+import io.github.viktoralex2000.ledger.config.LedgerProperties.Transfer;
+import io.github.viktoralex2000.ledger.exception.InsufficientFundsException;
+import io.github.viktoralex2000.ledger.model.TransferEntity;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -32,13 +36,13 @@ class TransferFlowIntegrationTest extends IntegrationTestSupport {
 
         JsonNode transfer = postTransfer(token, fromId, toId, "10.00", "it-transfer-1");
 
-        assertEquals("COMPLETED", transfer.get("status").asText());
-        assertEquals("EUR", transfer.get("currency").asText());
+        assertEquals("COMPLETED", transfer.get("status").asString());
+        assertEquals("EUR", transfer.get("currency").asString());
         assertEquals(0, transfer.get("amount").decimalValue().compareTo(new BigDecimal("10.00")));
         assertEquals(0, transfer.get("fee").decimalValue().compareTo(BigDecimal.ZERO));
 
-        Transfer stored = transferRepository.findAll().get(0);
-        assertEquals(Transfer.TransferStatus.COMPLETED, stored.getStatus());
+        TransferEntity stored = transferRepository.findAll().get(0);
+        assertEquals(TransferEntity.TransferStatus.COMPLETED, stored.getStatus());
         assertTrue(outboxRepository.findAll().stream()
                 .anyMatch(e -> "TRANSFER_COMPLETED".equals(e.getEventType())));
 
@@ -91,7 +95,7 @@ class TransferFlowIntegrationTest extends IntegrationTestSupport {
         long fromId = createWallet(token, "EUR").get("id").asLong();
         long toId = createWallet(token, "USD").get("id").asLong();
 
-        expectDomainException(org.example.firstpetprojectexchanger.exception.InsufficientFundsException.class,
+        expectDomainException(InsufficientFundsException.class,
                 post("/api/transfers")
                         .header("Authorization", "Bearer " + token)
                         .header("Idempotency-Key", "insufficient-" + UUID.randomUUID())
